@@ -14,8 +14,10 @@ jobs:
   run-quests-collectibles:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+
     permissions:
       contents: write
+
     env:
       DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
       DISCORD_COLLECTIBLES_CHANNEL_ID: ${{ secrets.DISCORD_COLLECTIBLES_CHANNEL_ID }}
@@ -29,15 +31,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          ref: ${{ github.event.inputs.branch_name || 'main' }}
           fetch-depth: 0
           persist-credentials: true
+          ref: ${{ github.event.inputs.branch_name || 'main' }}
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
-          version: '1.x'
+          bun-version: latest
 
       - name: Install dependencies
         run: |
@@ -54,10 +55,14 @@ jobs:
 
       - name: Commit state changes
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add state.json || true
-          if ! git diff --cached --quiet -- state.json; then
-            git commit -m 'chore: sync state.json [skip ci]' state.json
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add state.json
+
+          if git diff --cached --quiet; then
+            echo "No changes"
+          else
+            git commit -m "chore: sync state.json [skip ci]"
             git push
           fi
