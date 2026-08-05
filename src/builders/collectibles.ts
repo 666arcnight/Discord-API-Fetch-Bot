@@ -88,7 +88,7 @@ function starterTitle(release: CollectibleRelease): string {
 }
 
 function buildStarterFooter(mention: string): string {
-  return `-# Source by Discord ID API | \`discord.my.id\`\n-# ${mention}`;
+  return `-# Made with 🦇 by Lord ReyVamp | \`discord.ARCNIGHT\`\n-# ${mention}`;
 }
 
 function buildDetailFooter(release: CollectibleRelease): string {
